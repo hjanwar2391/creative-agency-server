@@ -60,25 +60,6 @@ client.connect(err => {
     })
 
 
-    
-
-    // app.post('/appointmentsByDate', (req, res) => {
-    //     const date = req.body;
-    //     const email = req.body.email;
-    //     serviceCollection.find({ email: email })
-    //         .toArray((err, doctors) => {
-    //             const filter = { date: date.date }
-    //             if (doctors.length === 0) {
-    //                 filter.email = email;
-    //             }
-    //             appointmentCollection.find(filter)
-    //                 .toArray((err, documents) => {
-    //                     console.log(email, date.date, doctors, documents)
-    //                     res.send(documents);
-    //                 })
-    //         })
-    // })
-
     app.post('/addAService', (req, res) => {
         const file = req.files.file;
         const name = req.body.name;
@@ -126,20 +107,7 @@ client.connect(err => {
 
 
 
-//   app.post('/addDoctor', (req , res)=> {
-//     const file = req.files.file;
-//     const name = req.body.name;
-//     const email = req.body.email;
-//     console.log(name, email, file);
-//     file.mv(`${__dirname}/doctors/${file.name}`, err => {
-//       if (err) {
-//         console.log(err);
-//         return res.status(500).send({ msg: 'failed to upload image'});
-//       }
-//       return res.send({name: file.name, path: `/${file.name}`})
-//     })
-  
-//   })
+
   
 });
 
