@@ -22,7 +22,7 @@ const port = 5000
 
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true});
 client.connect(err => {
-  const appointmentCollection = client.db("agency").collection("order");
+  const orderCollection = client.db("agency").collection("order");
   const feedbackCollection = client.db("agency").collection("feedback");
   const adminCollection = client.db("agency").collection("admin");
   const serviceCollection = client.db("agency").collection("service");
@@ -30,14 +30,22 @@ client.connect(err => {
     app.post('/addOrder', (req, res) => {
         const appointment = req.body;
         console.log(appointment);
-        appointmentCollection.insertOne(appointment)
+        console.log(appointment);
+        orderCollection.insertOne(appointment)
             .then(result => {
                 res.send(result.insertedCount > 0)
             })
     });
 
     app.get('/orders', (req, res) => {
-        appointmentCollection.find({})
+        orderCollection.find({})
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
+    })
+
+    app.get('/orderList', (req, res) => {
+        orderCollection.find({email: req.query.email})
             .toArray((err, documents) => {
                 res.send(documents);
             })
@@ -81,12 +89,30 @@ client.connect(err => {
     })
 
     app.post('/addAdmin', (req, res) => {
+        const userInfo = req.body;
+        adminCollection.insertOne(userInfo)
+          .then(result => {
+            res.send(result.insertedCount > 0)
+          })
+    });
+
+    app.post('/isAdmin', (req, res) => {
         const email = req.body.email;
-        adminCollection.insertOne({ email })
-            .then(result => {
-                res.send(result.insertedCount > 0);
-            })
-    })
+        adminCollection.find({ email: email })
+          .toArray((err, admins) => {
+            res.send(admins.length > 0);
+          })
+    });
+      
+    app.post('/isUser', (req, res) => {
+        const email = req.body.email;
+        orderCollection.find({ email: email })
+          .toArray((err, user) => {
+            res.send(user.length > 0);
+          })
+    });
+
+   
 
     app.get('/service', (req, res) => {
         serviceCollection.find({})
@@ -94,19 +120,6 @@ client.connect(err => {
                 res.send(documents);
             })
     });
-
-    app.post('/isAdmin', (req, res) => {
-        const email = req.body.email;
-        console.log(email);
-        adminCollection.find({ email: email })
-            .toArray((err, documents) => {
-                res.send(documents.length > 0);
-            })
-    })
-
-
-
-
 
   
 });
